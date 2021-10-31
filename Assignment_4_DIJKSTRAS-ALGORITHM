@@ -1,0 +1,128 @@
+// Dijkstra shortest path.cpp : This file contains the 'main' function. 
+/*
+SUMMARY
+let distance of start nVertex from start Vertex=0 -- example A-0
+let distance of all other vertices from start = infinity
+
+WHILE vertices remain unvisited
+visit unvisited vertex with smallest known distance from start vertex
+FOR each unvisited neighbour of the current nVertex
+calculate the distance from start Vertex
+If the calculated distance of this vertex is less than the know distance
+Update shorttest distance
+update previous nVertex with the current nVertex
+end if
+next unvisited neighbour
+add the current nVertex o the list of visited vertices
+end while
+*/
+
+#include<iostream>
+#include<climits>
+using namespace std;
+
+// Number of vertices in the graph
+#define nVertex 5
+
+//graph image http://graphonline.ru/en/?graph=iTJkypSHvAIKRXWV
+int graph[nVertex][nVertex] = {
+    {0, 10, 0, 30, 100},
+    {10, 0, 50, 0, 0},
+    {0, 50, 0, 20, 10},
+    {30, 0, 20, 0, 60},
+    {100, 0, 10, 60, 0}
+};
+
+
+// finding minimum distance
+int visitedVertex(int distance[], bool visitState[]) 
+{
+    //let distance of all other vertices from start = infinity
+    int minimum = INT_MAX, visitedNumber;
+    
+     for (int k = 0; k < nVertex; k++)
+    {
+         //if value on distance k position is smaller than the minimun position then, minPosition is the k value
+         //visit state values is defined with previous minPosition value from last loop.
+         //this funtion helps define what neighbors were visited
+        if (visitState[k] == false && distance[k] <= minimum)
+        {
+            minimum = distance[k];
+            visitedNumber = k;
+            //cout << " Current visited: " << distance[k]<< endl;
+         }
+    }
+    return visitedNumber;
+}
+
+
+void dijkstraAlgorithm(int graph[nVertex][nVertex], int distanceIndex){ // call the graph
+
+    //Init
+    int distance[nVertex]; // array to calculate the distance for each node            
+    bool visitState[nVertex];// boolean array to mark visited and unvisited for each node
+
+    for (int k = 0; k < nVertex; k++)
+    {
+        distance[k] = INT_MAX;// all distances set to infinity
+        visitState[k] = false;//visted is false
+    }
+    ///visitState = {false,false,false,false,false}
+         
+
+    distance[distanceIndex] = 0;   // Source Vertex distance is set 0 {0,0,0,0,0}               
+
+    for (int k = 0; k < nVertex; k++)
+    {
+        int m = visitedVertex(distance, visitState);// m reveives position of vertex that is about to be visited.
+        //char vertexName = m + 65;//node name
+
+        visitState[m] = true;//set visit state to true on M position to define visit state
+        // m=2 {true,true,false, false, false}
+
+        for (int k = 0; k < nVertex; k++)
+        {
+            // updating the distance of  Vertex
+            //if visit state of a note is false and
+            //graph with smallest visit value and
+            // distance is of the value is not infinity
+            //distance and value of the smallest number path compared to the previous path
+            if (visitState[k] == 0 && graph[m][k] && distance[m] != INT_MAX && distance[m] + graph[m][k] < distance[k])
+            {
+                //array Distance in position K will receives the sum of [distance found on vertex position] + graph value
+                distance[k] = distance[m] + graph[m][k];
+
+            }
+        }
+        cout << " " << endl;
+    }
+
+   //Printing Result
+    
+    cout << "Result:" << endl;
+    
+    for (int k = 0; k < nVertex; k++)
+    {
+        char str = 65 + k;//making ABCD nodes
+        cout << "Vertex: " <<str <<  " - Minimun Distance from A: " << "  " << distance[k] << endl;
+    }
+}
+
+    int main()
+{
+     int x,y;
+     cout << "Graph Matrix:" << endl;
+     for (int x = 0; x < nVertex; x++)
+     {
+         cout << "\n";
+         for (int y = 0; y < nVertex; y++)
+         {
+             cout <<" " << graph[x][y];
+         }
+     }
+
+     
+     //calling the calculation
+    dijkstraAlgorithm(graph, 0);
+    return 0;
+}
